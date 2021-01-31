@@ -1,4 +1,4 @@
-#class   : Foundations of Data Science
+#class   : Foundations of ML and Data Science
 #homework: 1
 #question: 4(a)
 #author  : Mohammad Afzal Shadab
