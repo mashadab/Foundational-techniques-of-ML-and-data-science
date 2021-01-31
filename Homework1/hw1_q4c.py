@@ -6,12 +6,13 @@
 
 #Block Power method
 import numpy as np
+from scipy.linalg import orth 
 
-tol    = 1e-14    #tolerance for power method
-max_iter=5000     #maximum number of iterations
+tol    = 1e-15    #tolerance for power method
+max_iter= 5000    #maximum number of iterations
 n      = 10       #size
 A      = np.zeros((n,n)) #placeholder for A matrix
-s      = 4        #number of singular vectors
+s      = 8        #number of singular vectors
 
 for i in range(0,n):
     for j in range(0,n):
@@ -25,14 +26,25 @@ err    = 1.0
 i      = 0
 
 #block power method
-while err > tol and i < max_iter: #error comparison
-    B     = A @ v                 #finding new matrix B =Av
-    Q,R   = np.linalg.qr(B)       #finding QR factorization of B
-    v     = Q[:,0:s]              #extraction of orthonormal vectors close to singular vectors
-    lmbda = R[0:s,:]              #extraction of singular values (can be negative)
-    err   = np.linalg.norm(A@v - v @ lmbda)
+while err > tol and i < max_iter:  #error comparison
+    v_old = orth(v)
+    v     = A @ v_old      #finding new matrix B =Av
+    err   = np.linalg.norm(v - v_old)
     i = i + 1
-   
-print('Iteration: ',i,'\n','Lambda: \n',lmbda,'\n','V: \n',v)
 
-U,D,V =  np.linalg.svd(A)
+v     = v/np.linalg.norm(v, ord=2, axis=0, keepdims=True) #normalize each column
+
+lmbda = np.matrix.transpose(v) @ (A @ v)                  #finding Rayleigh-quotients
+
+for i in range(0,s):
+    if lmbda[i,i] < 0.0: #for negative singular values, change the sign
+        lmbda[i,i] = np.abs(lmbda[i,i])
+        v[:,i]     = -v[:,i] 
+
+print('Iteration: ',i,'\n','V: \n',v)
+
+#Verify
+U,D,VT =  np.linalg.svd(A)
+V_direct = np.transpose(VT[0:s,:])
+
+print('Frobenius norm of error in the V matrices', np.linalg.norm(np.absolute(v) - np.absolute(V_direct)))
