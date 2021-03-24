@@ -32,10 +32,10 @@ epsilon_sigma = np.array([0.0,0.01,0.1,1.0])
 
 fig, ax = plt.subplots(1,2, figsize=(10,7.5),dpi=80)
 plt.subplots_adjust(hspace = 0.001)
+ax[0].set_yscale('log')
 ax[0].set_xlabel('Iterations')
 ax[1].set_xlabel('Iterations')
 ax[0].set_ylabel('Mean Squared Error Norm')
-ax[0].set_yscale('log')
 for i in range(len(epsilon_sigma)):
     epsilon = np.random.normal(0,epsilon_sigma[i], (n,1))
     b = A @ x_opt + epsilon
@@ -73,10 +73,10 @@ stochastic_index = stochastic_index_compute(n,max_iters)
     
 fig, ax = plt.subplots(1,2, figsize=(10,10))
 plt.subplots_adjust(hspace = 0.001)
+ax[0].set_yscale('log')
 ax[0].set_xlabel('Iterations')
 ax[1].set_xlabel('Iterations')
 ax[0].set_ylabel('Mean Squared Error Norm')
-ax[0].set_yscale('log')
 
 for i in range(len(epsilon_sigma)): # Looping over each epsilon
     epsilon = np.random.normal(0, epsilon_sigma[i], (n,1))
